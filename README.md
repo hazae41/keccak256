@@ -1,6 +1,6 @@
 # Keccak256
 
-Keccak-1 adapter for WebAssembly and JS implementations
+Keccak-256 adapter for WebAssembly and JS implementations
 
 ```bash
 npm i @hazae41/keccak256
