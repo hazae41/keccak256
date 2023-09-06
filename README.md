@@ -32,7 +32,7 @@ const keccak256 = Keccak256.fromMorax(Morax)
 /**
  * Set it globally (optional)
  **/
-Keccak256.global.inner = keccak256
+Keccak256.set(keccak256)
 ```
 
 ### Noble (JavaScript)
@@ -49,7 +49,7 @@ const keccak256 = Keccak256.fromNoble(noble_sha3.keccak_256)
 /**
  * Set it globally (optional)
  **/
-Keccak256.global.inner = keccak256
+Keccak256.set(keccak256)
 ```
 
 ## Usage
