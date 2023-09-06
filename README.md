@@ -23,10 +23,6 @@ import { Keccak256 } from "@hazae41/keccak256"
 import { Morax } from "@hazae41/morax"
 
 await Morax.initBundledOnce()
-
-/**
- * Create an instance from Morax
- **/
 const keccak256 = Keccak256.fromMorax(Morax)
 
 /**
@@ -41,9 +37,6 @@ Keccak256.set(keccak256)
 import { Keccak256 } from "@hazae41/keccak256"
 import * as noble_sha3 from "@noble/hashes/sha3"
 
-/**
- * Create an instance from Noble
- **/
 const keccak256 = Keccak256.fromNoble(noble_sha3.keccak_256)
 
 /**
