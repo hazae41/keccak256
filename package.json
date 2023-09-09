@@ -22,14 +22,14 @@
     "prepare": "npm run build"
   },
   "devDependencies": {
-    "@hazae41/cursor": "^1.1.25",
-    "@hazae41/morax": "^1.1.0",
+    "@hazae41/cursor": "^1.1.26",
+    "@hazae41/morax": "^1.1.1",
     "@hazae41/phobos": "^1.0.10",
     "@noble/hashes": "^1.3.2",
     "@rollup/plugin-typescript": "^11.1.3",
-    "@types/node": "^20.5.9",
+    "@types/node": "^20.6.0",
     "rimraf": "^5.0.1",
-    "rollup": "^3.28.1",
+    "rollup": "^3.29.0",
     "rollup-plugin-dts": "^6.0.1",
     "rollup-plugin-node-externals": "^6.1.1",
     "typescript": "^5.2.2"
