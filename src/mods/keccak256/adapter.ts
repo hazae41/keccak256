@@ -1,6 +1,7 @@
 import { Cursor, CursorWriteError } from "@hazae41/cursor"
 import { None, Option } from "@hazae41/option"
 import { Ok, Result } from "@hazae41/result"
+import { CreateError, FinalizeError, HashError, UpdateError } from "./errors.js"
 
 let global: Option<Adapter> = new None()
 
@@ -57,18 +58,18 @@ export class Copied implements Copiable {
 }
 
 export interface Hasher extends Disposable {
-  tryUpdate(bytes: Uint8Array): Result<void, Error>
-  tryFinalize(): Result<Copiable, Error>
+  tryUpdate(bytes: Uint8Array): Result<void, UpdateError>
+  tryFinalize(): Result<Copiable, FinalizeError>
 }
 
 export interface HasherFactory {
-  tryNew(): Result<Hasher, Error>
+  tryNew(): Result<Hasher, CreateError>
 }
 
 
 export interface Adapter {
   readonly Hasher: HasherFactory
 
-  tryHash(bytes: Uint8Array): Result<Copiable, Error>
+  tryHash(bytes: Uint8Array): Result<Copiable, HashError>
 }
 

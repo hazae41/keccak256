@@ -1,8 +1,10 @@
-import type { Morax } from "@hazae41/morax"
+import { Morax } from "@hazae41/morax"
 import { Result } from "@hazae41/result"
-import { Adapter } from "./keccak256.js"
+import { Adapter } from "./adapter.js"
+import { CreateError, FinalizeError, HashError, UpdateError } from "./errors.js"
 
-export function fromMorax(morax: typeof Morax): Adapter {
+export async function fromMorax(): Promise<Adapter> {
+  await Morax.initBundledOnce()
 
   class Hasher {
 
@@ -19,21 +21,21 @@ export function fromMorax(morax: typeof Morax): Adapter {
     }
 
     static tryNew() {
-      return Result.runAndDoubleWrapSync(() => new morax.Keccak256Hasher()).mapSync(Hasher.new)
+      return Result.runAndDoubleWrapSync(() => new Morax.Keccak256Hasher()).mapSync(Hasher.new).mapErrSync(CreateError.from)
     }
 
     tryUpdate(bytes: Uint8Array) {
-      return Result.runAndDoubleWrapSync(() => this.inner.update(bytes))
+      return Result.runAndDoubleWrapSync(() => this.inner.update(bytes)).mapErrSync(UpdateError.from)
     }
 
     tryFinalize() {
-      return Result.runAndDoubleWrapSync(() => this.inner.finalize())
+      return Result.runAndDoubleWrapSync(() => this.inner.finalize()).mapErrSync(FinalizeError.from)
     }
 
   }
 
   function tryHash(bytes: Uint8Array) {
-    return Result.runAndDoubleWrapSync(() => morax.keccak256(bytes))
+    return Result.runAndDoubleWrapSync(() => Morax.keccak256(bytes)).mapErrSync(HashError.from)
   }
 
   return { Hasher, tryHash }

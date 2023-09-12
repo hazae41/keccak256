@@ -18,31 +18,26 @@ npm i @hazae41/keccak256
 
 ### Morax (WebAssembly)
 
+```bash
+npm i @hazae41/morax
+```
+
 ```typescript
 import { Keccak256 } from "@hazae41/keccak256"
-import { Morax } from "@hazae41/morax"
 
-await Morax.initBundledOnce()
-const keccak256 = Keccak256.fromMorax(Morax)
-
-/**
- * Set it globally (optional)
- **/
-Keccak256.set(keccak256)
+Keccak256.set(await Keccak256.fromMorax())
 ```
 
 ### Noble (JavaScript)
 
+```bash
+npm i @noble/hashes
+```
+
 ```typescript
 import { Keccak256 } from "@hazae41/keccak256"
-import * as noble_sha3 from "@noble/hashes/sha3"
 
-const keccak256 = Keccak256.fromNoble(noble_sha3.keccak_256)
-
-/**
- * Set it globally (optional)
- **/
-Keccak256.set(keccak256)
+Keccak256.set(Keccak256.fromNoble())
 ```
 
 ## Usage
@@ -50,13 +45,13 @@ Keccak256.set(keccak256)
 ### Direct
 
 ```tsx
-const hashed: Uint8Array = keccak256.tryHash(new Uint8Array([1,2,3,4,5])).unwrap().copy()
+const hashed: Uint8Array = Keccak256.get().tryHash(new Uint8Array([1,2,3,4,5])).unwrap().copyAndDispose()
 ```
 
 ### Incremental
 
 ```tsx
-const hasher = keccak256.Hasher.tryNew().unwrap()
+const hasher = Keccak256.get().Hasher.tryNew().unwrap()
 hasher.tryUpdate(new Uint8Array([1,2,3,4,5])).unwrap()
-const hashed: Uint8Array = hasher.tryFinalize().unwrap().copy()
+const hashed: Uint8Array = hasher.tryFinalize().unwrap().copyAndDispose()
 ```
