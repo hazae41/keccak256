@@ -1,4 +1,4 @@
-import { Box, Copiable } from "@hazae41/box"
+import { BytesOrCopiable, Copiable } from "@hazae41/box"
 import { None, Option } from "@hazae41/option"
 import { Result } from "@hazae41/result"
 import { CreateError, FinalizeError, HashError, UpdateError } from "./errors.js"
@@ -14,7 +14,7 @@ export function set(value?: Adapter) {
 }
 
 export interface Hasher extends Disposable {
-  tryUpdate(bytes: Box<Copiable>): Result<void, UpdateError>
+  tryUpdate(bytes: BytesOrCopiable): Result<this, UpdateError>
   tryFinalize(): Result<Copiable, FinalizeError>
 }
 
@@ -26,6 +26,6 @@ export interface HasherFactory {
 export interface Adapter {
   readonly Hasher: HasherFactory
 
-  tryHash(bytes: Box<Copiable>): Result<Copiable, HashError>
+  tryHash(bytes: BytesOrCopiable): Result<Copiable, HashError>
 }
 

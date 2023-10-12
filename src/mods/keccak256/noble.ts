@@ -1,10 +1,14 @@
-import { Box, Copiable, Copied } from "@hazae41/box"
+import { BytesOrCopiable, Copied } from "@hazae41/box"
 import { Result } from "@hazae41/result"
 import { keccak_256 } from "@noble/hashes/sha3"
 import { Adapter } from "./adapter.js"
 import { CreateError, FinalizeError, HashError, UpdateError } from "./errors.js"
 
 export function fromNoble(): Adapter {
+
+  function getBytes(bytes: BytesOrCopiable) {
+    return "bytes" in bytes ? bytes.bytes : bytes
+  }
 
   class Hasher {
 
@@ -19,21 +23,29 @@ export function fromNoble(): Adapter {
     }
 
     static tryNew() {
-      return Result.runAndDoubleWrapSync(() => keccak_256.create()).mapSync(Hasher.new).mapErrSync(CreateError.from)
+      return Result.runAndDoubleWrapSync(() => {
+        return keccak_256.create()
+      }).mapSync(Hasher.new).mapErrSync(CreateError.from)
     }
 
-    tryUpdate(bytes: Box<Copiable>) {
-      return Result.runAndDoubleWrapSync(() => this.inner.update(bytes.get().bytes)).clear().mapErrSync(UpdateError.from)
+    tryUpdate(bytes: BytesOrCopiable) {
+      return Result.runAndDoubleWrapSync(() => {
+        return this.inner.update(getBytes(bytes))
+      }).set(this).mapErrSync(UpdateError.from)
     }
 
     tryFinalize() {
-      return Result.runAndDoubleWrapSync(() => this.inner.clone().digest()).mapSync(Copied.new).mapErrSync(FinalizeError.from)
+      return Result.runAndDoubleWrapSync(() => {
+        return this.inner.clone().digest()
+      }).mapSync(Copied.new).mapErrSync(FinalizeError.from)
     }
 
   }
 
-  function tryHash(bytes: Box<Copiable>) {
-    return Result.runAndDoubleWrapSync(() => keccak_256(bytes.get().bytes)).mapSync(Copied.new).mapErrSync(HashError.from)
+  function tryHash(bytes: BytesOrCopiable) {
+    return Result.runAndDoubleWrapSync(() => {
+      return keccak_256(getBytes(bytes))
+    }).mapSync(Copied.new).mapErrSync(HashError.from)
   }
 
   return { Hasher, tryHash }
