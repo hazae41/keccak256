@@ -14,11 +14,15 @@ export function set(value?: Adapter) {
 }
 
 export interface Hasher extends Disposable {
+  updateOrThrow(bytes: BytesOrCopiable): this
   tryUpdate(bytes: BytesOrCopiable): Result<this, UpdateError>
+
+  finalizeOrThrow(): Copiable
   tryFinalize(): Result<Copiable, FinalizeError>
 }
 
 export interface HasherFactory {
+  newOrThrow(): Hasher
   tryNew(): Result<Hasher, CreateError>
 }
 
@@ -26,6 +30,7 @@ export interface HasherFactory {
 export interface Adapter {
   readonly Hasher: HasherFactory
 
+  hashOrThrow(bytes: BytesOrCopiable): Copiable
   tryHash(bytes: BytesOrCopiable): Result<Copiable, HashError>
 }
 

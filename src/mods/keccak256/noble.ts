@@ -22,31 +22,48 @@ export function fromNoble(): Adapter {
       return new Hasher(inner)
     }
 
+    static newOrThrow() {
+      return new Hasher(keccak_256.create())
+    }
+
     static tryNew() {
       return Result.runAndDoubleWrapSync(() => {
-        return keccak_256.create()
-      }).mapSync(Hasher.new).mapErrSync(CreateError.from)
+        return Hasher.newOrThrow()
+      }).mapErrSync(CreateError.from)
+    }
+
+    updateOrThrow(bytes: BytesOrCopiable) {
+      this.inner.update(getBytes(bytes))
+      return this
     }
 
     tryUpdate(bytes: BytesOrCopiable) {
       return Result.runAndDoubleWrapSync(() => {
-        return this.inner.update(getBytes(bytes))
-      }).set(this).mapErrSync(UpdateError.from)
+        return this.updateOrThrow(bytes)
+      }).mapErrSync(UpdateError.from)
+    }
+
+    finalizeOrThrow() {
+      return new Copied(this.inner.clone().digest())
     }
 
     tryFinalize() {
       return Result.runAndDoubleWrapSync(() => {
-        return this.inner.clone().digest()
-      }).mapSync(Copied.new).mapErrSync(FinalizeError.from)
+        return this.finalizeOrThrow()
+      }).mapErrSync(FinalizeError.from)
     }
 
   }
 
-  function tryHash(bytes: BytesOrCopiable) {
-    return Result.runAndDoubleWrapSync(() => {
-      return keccak_256(getBytes(bytes))
-    }).mapSync(Copied.new).mapErrSync(HashError.from)
+  function hashOrThrow(bytes: BytesOrCopiable) {
+    return new Copied(keccak_256(getBytes(bytes)))
   }
 
-  return { Hasher, tryHash }
+  function tryHash(bytes: BytesOrCopiable) {
+    return Result.runAndDoubleWrapSync(() => {
+      return hashOrThrow(bytes)
+    }).mapErrSync(HashError.from)
+  }
+
+  return { Hasher, hashOrThrow, tryHash }
 }

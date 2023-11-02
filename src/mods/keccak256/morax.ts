@@ -29,18 +29,33 @@ export async function fromMorax(): Promise<Adapter> {
       return new Hasher(inner)
     }
 
+    static newOrThrow() {
+      return new Hasher(new Morax.Keccak256Hasher())
+    }
+
     static tryNew() {
       return Result.runAndDoubleWrapSync(() => {
-        return new Morax.Keccak256Hasher()
-      }).mapSync(Hasher.new).mapErrSync(CreateError.from)
+        return Hasher.newOrThrow()
+      }).mapErrSync(CreateError.from)
+    }
+
+    updateOrThrow(bytes: BytesOrCopiable) {
+      using memory = getMemory(bytes)
+      this.inner.update(memory.inner)
+      return this
     }
 
     tryUpdate(bytes: BytesOrCopiable) {
       using memory = getMemory(bytes)
 
       return Result.runAndDoubleWrapSync(() => {
-        return this.inner.update(memory.inner)
-      }).set(this).mapErrSync(UpdateError.from)
+        this.inner.update(memory.inner)
+        return this
+      }).mapErrSync(UpdateError.from)
+    }
+
+    finalizeOrThrow() {
+      return this.inner.finalize()
     }
 
     tryFinalize() {
@@ -51,6 +66,11 @@ export async function fromMorax(): Promise<Adapter> {
 
   }
 
+  function hashOrThrow(bytes: BytesOrCopiable) {
+    using memory = getMemory(bytes)
+    return Morax.keccak256(memory.inner)
+  }
+
   function tryHash(bytes: BytesOrCopiable) {
     using memory = getMemory(bytes)
 
@@ -59,5 +79,5 @@ export async function fromMorax(): Promise<Adapter> {
     }).mapErrSync(HashError.from)
   }
 
-  return { Hasher, tryHash }
+  return { Hasher, hashOrThrow, tryHash }
 }
