@@ -1,16 +1,18 @@
 import { BytesOrCopiable, Copiable } from "@hazae41/box"
-import { None, Option } from "@hazae41/option"
+import { Nullable } from "@hazae41/option"
 import { Result } from "@hazae41/result"
 import { CreateError, FinalizeError, HashError, UpdateError } from "./errors.js"
 
-let global: Option<Adapter> = new None()
+let global: Nullable<Adapter> = undefined
 
 export function get() {
-  return global.unwrap()
+  if (global == null)
+    throw new Error("No Keccak256 adapter found")
+  return global
 }
 
-export function set(value?: Adapter) {
-  global = Option.wrap(value)
+export function set(value?: Nullable<Adapter>) {
+  global = value
 }
 
 export interface Hasher extends Disposable {
