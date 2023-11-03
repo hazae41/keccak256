@@ -1,7 +1,7 @@
 import { BytesOrCopiable, Copied } from "@hazae41/box"
 import { Result } from "@hazae41/result"
 import { keccak_256 } from "@noble/hashes/sha3"
-import { Adapter } from "./adapter.js"
+import { Adapter, Output } from "./adapter.js"
 import { CreateError, FinalizeError, HashError, UpdateError } from "./errors.js"
 
 export function fromNoble(): Adapter {
@@ -44,24 +44,24 @@ export function fromNoble(): Adapter {
     }
 
     finalizeOrThrow() {
-      return new Copied(this.inner.clone().digest())
+      return new Copied(this.inner.clone().digest()) as Copied<Output>
     }
 
     tryFinalize() {
       return Result.runAndDoubleWrapSync(() => {
-        return this.finalizeOrThrow()
+        return this.finalizeOrThrow() as Copied<Output>
       }).mapErrSync(FinalizeError.from)
     }
 
   }
 
   function hashOrThrow(bytes: BytesOrCopiable) {
-    return new Copied(keccak_256(getBytes(bytes)))
+    return new Copied(keccak_256(getBytes(bytes))) as Copied<Output>
   }
 
   function tryHash(bytes: BytesOrCopiable) {
     return Result.runAndDoubleWrapSync(() => {
-      return hashOrThrow(bytes)
+      return hashOrThrow(bytes) as Copied<Output>
     }).mapErrSync(HashError.from)
   }
 
