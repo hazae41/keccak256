@@ -15,7 +15,7 @@ export function set(value?: Nullable<Adapter>) {
   global = value
 }
 
-export type Output = Uint8Array & { length: 32 }
+export type Output = Uint8Array & { readonly length: 32 }
 
 export interface Hasher extends Disposable {
   updateOrThrow(bytes: BytesOrCopiable): this
