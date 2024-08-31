@@ -39,7 +39,7 @@ npm i @noble/hashes
 
 ```typescript
 import { Keccak256 } from "@hazae41/keccak256"
-import * as Sha3Noble from "@noble/hashes/sha3"
+import Sha3Noble from "@noble/hashes/sha3"
 
 Keccak256.set(Keccak256.fromNoble(Sha3Noble))
 ```
