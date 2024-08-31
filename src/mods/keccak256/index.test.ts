@@ -14,9 +14,9 @@ test("direct", async ({ message }) => {
 
   await Sha3Wasm.initBundled()
 
-  const morax = fromWasm(Sha3Wasm)
+  const wasm = fromWasm(Sha3Wasm)
 
-  using bbb = morax.hashOrThrow(new Uint8Array([1, 2, 3, 4, 5, 6]))
+  using bbb = wasm.hashOrThrow(new Uint8Array([1, 2, 3, 4, 5, 6]))
 
   assert(Buffer.from(aaa.bytes).equals(Buffer.from(bbb.bytes)))
 })
@@ -32,13 +32,13 @@ test("incremental", async ({ message }) => {
 
   await Sha3Wasm.initBundled()
 
-  const morax = fromWasm(Sha3Wasm)
+  const wasm = fromWasm(Sha3Wasm)
 
-  using moraxh = morax.Hasher.createOrThrow()
-  moraxh.updateOrThrow(new Uint8Array([1, 2, 3, 4, 5, 6]))
-  moraxh.updateOrThrow(new Uint8Array([1, 2, 3, 4, 5, 6]))
+  using wasmh = wasm.Hasher.createOrThrow()
+  wasmh.updateOrThrow(new Uint8Array([1, 2, 3, 4, 5, 6]))
+  wasmh.updateOrThrow(new Uint8Array([1, 2, 3, 4, 5, 6]))
 
-  using bbb = moraxh.finalizeOrThrow()
+  using bbb = wasmh.finalizeOrThrow()
 
   assert(Buffer.from(aaa.bytes).equals(Buffer.from(bbb.bytes)))
 })
