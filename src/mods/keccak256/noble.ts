@@ -1,10 +1,9 @@
-import { BytesOrCopiable, Copied } from "@hazae41/box"
-import { Result } from "@hazae41/result"
-import { keccak_256 } from "@noble/hashes/sha3"
+import * as Sha3Noble from "@noble/hashes/sha3"
+import { BytesOrCopiable, Copied } from "libs/copiable/index.js"
 import { Adapter, Output } from "./adapter.js"
-import { CreateError, FinalizeError, HashError, UpdateError } from "./errors.js"
 
-export function fromNoble(): Adapter {
+export function fromNoble(noble: typeof Sha3Noble) {
+  const { keccak_256 } = noble
 
   function getBytes(bytes: BytesOrCopiable) {
     return "bytes" in bytes ? bytes.bytes : bytes
@@ -13,23 +12,17 @@ export function fromNoble(): Adapter {
   class Hasher {
 
     constructor(
-      readonly inner: ReturnType<typeof keccak_256.create>
+      readonly inner: ReturnType<typeof Sha3Noble.keccak_256.create>
     ) { }
 
     [Symbol.dispose]() { }
 
-    static new(inner: ReturnType<typeof keccak_256.create>) {
+    static create(inner: ReturnType<typeof Sha3Noble.keccak_256.create>) {
       return new Hasher(inner)
     }
 
-    static newOrThrow() {
+    static createOrThrow() {
       return new Hasher(keccak_256.create())
-    }
-
-    static tryNew() {
-      return Result.runAndDoubleWrapSync(() => {
-        return Hasher.newOrThrow()
-      }).mapErrSync(CreateError.from)
     }
 
     updateOrThrow(bytes: BytesOrCopiable) {
@@ -37,20 +30,8 @@ export function fromNoble(): Adapter {
       return this
     }
 
-    tryUpdate(bytes: BytesOrCopiable) {
-      return Result.runAndDoubleWrapSync(() => {
-        return this.updateOrThrow(bytes)
-      }).mapErrSync(UpdateError.from)
-    }
-
     finalizeOrThrow() {
       return new Copied(this.inner.clone().digest()) as Copied<Output>
-    }
-
-    tryFinalize() {
-      return Result.runAndDoubleWrapSync(() => {
-        return this.finalizeOrThrow() as Copied<Output>
-      }).mapErrSync(FinalizeError.from)
     }
 
   }
@@ -59,11 +40,5 @@ export function fromNoble(): Adapter {
     return new Copied(keccak_256(getBytes(bytes))) as Copied<Output>
   }
 
-  function tryHash(bytes: BytesOrCopiable) {
-    return Result.runAndDoubleWrapSync(() => {
-      return hashOrThrow(bytes) as Copied<Output>
-    }).mapErrSync(HashError.from)
-  }
-
-  return { Hasher, hashOrThrow, tryHash }
+  return { Hasher, hashOrThrow } satisfies Adapter
 }
