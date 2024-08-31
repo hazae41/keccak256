@@ -32,6 +32,10 @@ export function fromWasm(wasm: typeof Sha3Wasm) {
       return new Hasher(new Keccak256Hasher())
     }
 
+    cloneOrThrow() {
+      return new Hasher(this.inner.clone())
+    }
+
     updateOrThrow(bytes: BytesOrCopiable) {
       using memory = getMemory(bytes)
       this.inner.update(memory.inner)

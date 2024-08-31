@@ -25,6 +25,10 @@ export function fromNoble(noble: typeof Sha3Noble) {
       return new Hasher(keccak_256.create())
     }
 
+    cloneOrThrow() {
+      return new Hasher(this.inner.clone())
+    }
+
     updateOrThrow(bytes: BytesOrCopiable) {
       this.inner.update(getBytes(bytes))
       return this

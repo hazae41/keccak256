@@ -14,6 +14,8 @@ export function set(value: Nullable<Adapter>) {
 export type Output = Uint8Array & { readonly length: 32 }
 
 export interface Hasher extends Disposable {
+  cloneOrThrow(): Hasher
+
   updateOrThrow(bytes: BytesOrCopiable): this
 
   finalizeOrThrow(): Copiable<Output>
