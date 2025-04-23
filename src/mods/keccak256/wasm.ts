@@ -8,7 +8,7 @@ export function fromWasm(wasm: typeof Sha3Wasm) {
 
   function getMemory(bytesOrCopiable: BytesOrCopiable) {
     if (bytesOrCopiable instanceof Memory)
-      return Box.createAsMoved(bytesOrCopiable)
+      return Box.createAsDropped(bytesOrCopiable)
     if (bytesOrCopiable instanceof Uint8Array)
       return Box.create(new Memory(bytesOrCopiable))
     return Box.create(new Memory(bytesOrCopiable.bytes))
@@ -38,7 +38,7 @@ export function fromWasm(wasm: typeof Sha3Wasm) {
 
     updateOrThrow(bytes: BytesOrCopiable) {
       using memory = getMemory(bytes)
-      this.inner.update(memory.inner)
+      this.inner.update(memory.value)
       return this
     }
 
@@ -50,7 +50,7 @@ export function fromWasm(wasm: typeof Sha3Wasm) {
 
   function hashOrThrow(bytes: BytesOrCopiable) {
     using memory = getMemory(bytes)
-    const output = keccak256(memory.inner)
+    const output = keccak256(memory.value)
     return output as Copiable<Output>
   }
 
