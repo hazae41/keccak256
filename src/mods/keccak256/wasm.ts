@@ -1,4 +1,4 @@
-import { Box } from "@hazae41/box"
+import { Pin, Ref } from "@hazae41/box"
 import type { Keccak256Hasher, Sha3Wasm } from "@hazae41/sha3.wasm"
 import { BytesOrCopiable, Copiable } from "libs/copiable/index.js"
 import { Adapter, Output } from "./adapter.js"
@@ -8,10 +8,12 @@ export function fromWasm(wasm: typeof Sha3Wasm) {
 
   function getMemory(bytesOrCopiable: BytesOrCopiable) {
     if (bytesOrCopiable instanceof Memory)
-      return Box.createAsDropped(bytesOrCopiable)
+      return new Ref(bytesOrCopiable)
+
     if (bytesOrCopiable instanceof Uint8Array)
-      return Box.create(new Memory(bytesOrCopiable))
-    return Box.create(new Memory(bytesOrCopiable.bytes))
+      return Pin.from(new Memory(bytesOrCopiable))
+
+    return Pin.from(new Memory(bytesOrCopiable.bytes))
   }
 
   class Hasher {

@@ -28,8 +28,8 @@
     "@hazae41/symbol-dispose-polyfill": "^1.0.2",
     "@noble/hashes": "^1.8.0",
     "@rollup/plugin-typescript": "^12.1.2",
-    "@types/node": "^22.14.1",
-    "rollup": "^4.40.0",
+    "@types/node": "^22.15.21",
+    "rollup": "^4.41.1",
     "rollup-plugin-dts": "^6.2.1",
     "rollup-plugin-node-externals": "^8.0.0",
     "tslib": "^2.8.1",
@@ -53,7 +53,7 @@
     "esmodules"
   ],
   "dependencies": {
-    "@hazae41/box": "^2.3.4",
+    "@hazae41/box": "^3.0.0",
     "@hazae41/option": "^1.1.4"
   }
 }
