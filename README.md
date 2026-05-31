@@ -1,12 +1,12 @@
 # Keccak256
 
-Keccak-256 adapter for WebAssembly and JS implementations
+Keccak-256 for the web
 
 ```bash
-npm i @hazae41/keccak256
+npm install @hazae41/keccak256
 ```
 
-[**Node Package 📦**](https://www.npmjs.com/package/@hazae41/keccak256)
+[**📦 NPM**](https://www.npmjs.com/package/@hazae41/keccak256)
 
 ## Features
 
@@ -14,52 +14,29 @@ npm i @hazae41/keccak256
 - 100% TypeScript and ESM
 - No external dependencies
 
-## Getting started
-
-### WebAssembly
-
-```bash
-npm i @hazae41/sha3.wasm
-```
-
-```typescript
-import { Keccak256 } from "@hazae41/keccak256"
-import { Sha3Wasm } from "@hazae41/sha3.wasm"
-
-await Sha3Wasm.initBundled()
-
-Keccak256.set(Keccak256.fromWasm(Sha3Wasm))
-```
-
-### Noble (JavaScript)
-
-```bash
-npm i @noble/hashes
-```
-
-```typescript
-import { Keccak256 } from "@hazae41/keccak256"
-import Sha3Noble from "@noble/hashes/sha3"
-
-Keccak256.set(Keccak256.fromNoble(Sha3Noble))
-```
-
 ## Usage
 
 ### Direct
 
 ```tsx
-using hashed: Copiable = Keccak256.get().getOrThrow().hashOrThrow(new Uint8Array([1,2,3,4,5]))
-const hashed2: Uint8Array = hashed.bytes.slice()
+const data = new TextEncoder().encode("Lorem ipsum dolor sit amet.")
+const hash = keccak256.digest(data)
 ```
 
 ### Incremental
 
 ```tsx
-using hasher: Keccak256.Hasher = Keccak256.get().getOrThrow().Hasher.createOrThrow()
-hasher.updateOrThrow(new Uint8Array([1,2,3,4,5]))
-hasher.updateOrThrow(new Uint8Array([6,7,8,9,10]))
+const hasher = new keccak256.Hasher()
 
-using hashed: Copiable = hasher.finalizeOrThrow()
-const hashed2: Uint8Array = hashed.bytes.slice()
+hasher.update(crypto.getRandomValues(new Uint8Array(100)))
+
+console.log(hasher.clone().finalize())
+
+hasher.update(crypto.getRandomValues(new Uint8Array(100)))
+
+console.log(hasher.clone().finalize())
+
+hasher.update(crypto.getRandomValues(new Uint8Array(100)))
+
+console.log(hasher.finalize())
 ```
