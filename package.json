@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@hazae41/keccak256",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Keccak-256 adapter for WebAssembly and JS implementations",
   "repository": "github:hazae41/keccak256",
   "author": "hazae41",
