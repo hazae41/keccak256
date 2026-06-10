@@ -1,6 +1,6 @@
-import { sha3Wasm } from "@hazae41/sha3-wasm";
+import { keccak256, Keccak256Hasher, load, Memory } from "@hazae41/sha3-wasm";
 
-await sha3Wasm.load()
+await load()
 
 /**
  * Digest the given data
@@ -8,11 +8,7 @@ await sha3Wasm.load()
  * @returns 
  */
 export function digest(data: Uint8Array): Uint8Array<ArrayBuffer> {
-  const { Memory } = sha3Wasm
-
-  const result = sha3Wasm.keccak256(new Memory(data))
-
-  return new Uint8Array(result.bytes)
+  return new Uint8Array(keccak256(new Memory(data)).bytes)
 }
 
 /**
@@ -21,7 +17,7 @@ export function digest(data: Uint8Array): Uint8Array<ArrayBuffer> {
 export class Hasher {
 
   constructor(
-    readonly inner = new sha3Wasm.Keccak256Hasher()
+    readonly inner = new Keccak256Hasher()
   ) { }
 
   /**
@@ -37,12 +33,8 @@ export class Hasher {
    * @param data 
    * @returns 
    */
-  update(data: Uint8Array): this {
-    const { Memory } = sha3Wasm
-
+  update(data: Uint8Array): void {
     this.inner.update(new Memory(data))
-
-    return this
   }
 
   /**

@@ -34,7 +34,7 @@
     "esmodules"
   ],
   "dependencies": {
-    "@hazae41/result-and-option": "^2.0.10",
-    "@hazae41/sha3-wasm": "^2.0.0"
+    "@hazae41/result-and-option": "^2.1.1",
+    "@hazae41/sha3-wasm": "^2.0.2"
   }
 }
