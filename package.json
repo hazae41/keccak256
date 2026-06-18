@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@hazae41/keccak256",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "Keccak-256 for the web",
   "repository": "github:hazae41/keccak256",
   "author": "hazae41",
